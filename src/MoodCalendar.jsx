@@ -29,11 +29,11 @@ export default function MoodCalendar({ user }) {
   }, [year, month])
 
  useEffect(() => {
-    fetch("https://api.quotable.io/random?tags=inspirational|mindfulness")
+    fetch("https://zenquotes.io/api/random")
       .then(r => r.json())
       .then(data => {
-        setQuote(data.content)
-        setQuoteAuthor(data.author)
+        setQuote(data[0].q)
+        setQuoteAuthor(data[0].a)
       })
       .catch(() => {
         setQuote("Every day is a new beginning.")
