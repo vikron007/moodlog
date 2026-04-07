@@ -100,9 +100,17 @@ const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart
   const avgMood = monthEntries.length
     ? (monthEntries.reduce((sum, e) => sum + e.mood, 0) / monthEntries.length).toFixed(1)
     : null
-  const bestMood = monthEntries.length
-    ? MOODS.find(m => m.value === Math.max(...monthEntries.map(e => e.mood)))
-    : null
+  const streak = (() => {
+    let count = 0
+    const d = new Date(today)
+    while (true) {
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
+      if (!entries[key]) break
+      count++
+      d.setDate(d.getDate() - 1)
+    }
+    return count
+  })()
 
   const selectedDateLabel = selected
     ? new Date(year, month, selected).toLocaleDateString("default", { weekday: "long", month: "long", day: "numeric" })
@@ -213,8 +221,8 @@ const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart
               <p className="text-xl font-medium text-gray-800">{monthEntries.length}</p>
             </div>
             <div className="bg-gray-50 rounded-xl p-3 text-center">
-              <p className="text-xs text-gray-400 mb-1">Best day</p>
-              <p className="text-xl">{bestMood?.emoji ?? "—"}</p>
+              <p className="text-xs text-gray-400 mb-1">Streak</p>
+              <p className="text-xl font-medium text-gray-800">{streak} {streak === 1 ? "day" : "days"}</p>
             </div>
           </div>
         </div>
