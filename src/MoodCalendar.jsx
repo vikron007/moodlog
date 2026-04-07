@@ -29,7 +29,9 @@ export default function MoodCalendar({ user }) {
   }, [year, month])
 
  useEffect(() => {
-    fetch("https://zenquotes.io/api/random")
+    const url = "https://zenquotes.io/api/random"
+    const proxy = `https://api.codetabs.com/v1/proxy?quest=${url}`
+    fetch(proxy)
       .then(r => r.json())
       .then(data => {
         setQuote(data[0].q)
