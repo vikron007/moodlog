@@ -65,7 +65,10 @@ export default function MoodCalendar({ user }) {
     setSelected(null)
   }
 
-  function selectDay(day) {
+function selectDay(day) {
+    const clicked = new Date(year, month, day)
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    if (clicked > todayStart) return
     const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
     const existing = entries[key]
     setSelected(day)
@@ -130,11 +133,13 @@ export default function MoodCalendar({ user }) {
                 <button
                   key={day}
                   onClick={() => selectDay(day)}
+                  disabled={new Date(year, month, day) > new Date(today.getFullYear(), today.getMonth(), today.getDate())}
                   className={`
                     aspect-square rounded-lg flex flex-col items-center justify-center text-xs font-medium transition-all
                     ${moodData ? `${moodData.bg} ${moodData.text}` : "bg-gray-50 text-gray-500 hover:bg-gray-100"}
                     ${isSelected ? "ring-2 ring-blue-400 ring-offset-1" : ""}
                     ${isTodayDay && !isSelected ? "ring-1 ring-blue-300" : ""}
+                    disabled:opacity-30 disabled:cursor-not-allowed
                   `}
                 >
                   {day}
