@@ -145,7 +145,7 @@ const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart
           
         </div>
         {quote && (
-                  <div className="px-5 py-4 border-b border-gray-100">
+                  <div className="px-5 py-4 border-b border-gray-100 text-center">
                     <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Quote of the day</p>
                     <p className="text-sm text-gray-700 italic leading-relaxed mb-1">"{quote}"</p>
                     <p className="text-xs text-gray-400">— {quoteAuthor}</p>
