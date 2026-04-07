@@ -282,6 +282,5 @@ const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart
         </div>
 
       </div>
-    </div>
   )
 }
