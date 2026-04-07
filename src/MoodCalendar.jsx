@@ -90,6 +90,20 @@ function selectDay(day) {
     return entries[key]
   }
 
+const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`
+  const todayEntry = entries[todayKey]
+
+  const monthEntries = Object.values(entries).filter(e => {
+    const [y, m] = e.date.split("-")
+    return parseInt(y) === year && parseInt(m) === month + 1
+  })
+  const avgMood = monthEntries.length
+    ? (monthEntries.reduce((sum, e) => sum + e.mood, 0) / monthEntries.length).toFixed(1)
+    : null
+  const bestMood = monthEntries.length
+    ? MOODS.find(m => m.value === Math.max(...monthEntries.map(e => e.mood)))
+    : null
+
   const selectedDateLabel = selected
     ? new Date(year, month, selected).toLocaleDateString("default", { weekday: "long", month: "long", day: "numeric" })
     : null
@@ -187,6 +201,47 @@ function selectDay(day) {
             </button>
           </div>
         )}
+
+       <div className="px-5 pb-4">
+          <div className="grid grid-cols-3 gap-2">
+            <div className="bg-gray-50 rounded-xl p-3 text-center">
+              <p className="text-xs text-gray-400 mb-1">Avg mood</p>
+              <p className="text-xl font-medium text-gray-800">{avgMood ?? "—"}</p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-3 text-center">
+              <p className="text-xs text-gray-400 mb-1">Days logged</p>
+              <p className="text-xl font-medium text-gray-800">{monthEntries.length}</p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-3 text-center">
+              <p className="text-xs text-gray-400 mb-1">Best day</p>
+              <p className="text-xl">{bestMood?.emoji ?? "—"}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-100 px-5 py-4">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Today</p>
+          {todayEntry ? (
+            <div className={`rounded-xl p-3 flex items-start gap-3 ${MOODS.find(m => m.value === todayEntry.mood)?.bg}`}>
+              <span className="text-2xl">{MOODS.find(m => m.value === todayEntry.mood)?.emoji}</span>
+              <div>
+                <p className={`text-sm font-medium ${MOODS.find(m => m.value === todayEntry.mood)?.text}`}>
+                  {MOODS.find(m => m.value === todayEntry.mood)?.label}
+                </p>
+                {todayEntry.note && (
+                  <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{todayEntry.note}</p>
+                )}
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => selectDay(today.getDate())}
+              className="w-full py-3 rounded-xl border border-dashed border-gray-200 text-sm text-gray-400 hover:bg-gray-50 transition-colors"
+            >
+              How are you feeling today? Tap to log →
+            </button>
+          )}
+        </div>
 
       </div>
     </div>
