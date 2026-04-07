@@ -28,14 +28,12 @@ export default function MoodCalendar({ user }) {
     loadEntries()
   }, [year, month])
 
- useEffect(() => {
-    const url = "https://zenquotes.io/api/random"
-    const proxy = `https://api.codetabs.com/v1/proxy?quest=${url}`
-    fetch(proxy)
+  useEffect(() => {
+    fetch("https://api.adviceslip.com/advice")
       .then(r => r.json())
       .then(data => {
-        setQuote(data[0].q)
-        setQuoteAuthor(data[0].a)
+        setQuote(data.slip.advice)
+        setQuoteAuthor("Daily Wisdom")
       })
       .catch(() => {
         setQuote("Every day is a new beginning.")
