@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
-import { db } from "./firebase"
+import { db, auth } from "./firebase"
 import { doc, setDoc, collection, getDocs } from "firebase/firestore"
+import { signOut } from "firebase/auth"
 
 const MOODS = [
   { value: 1, emoji: "😞", label: "Rough",   bg: "bg-red-50",    border: "border-red-200",   dot: "bg-red-400",    text: "text-red-800"   },
@@ -142,6 +143,13 @@ const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart
             </div>
             <span className="text-sm font-medium text-gray-800">MoodLog</span>
           </div>
+          <button
+            onClick={() => signOut(auth)}
+            className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            Sign out
+          </button>
+        </div>
           
         </div>
         {quote && (
