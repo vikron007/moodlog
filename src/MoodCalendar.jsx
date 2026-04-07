@@ -29,11 +29,17 @@ export default function MoodCalendar({ user }) {
   }, [year, month])
 
  useEffect(() => {
-    fetch("/api/quote")
+    fetch("https://quotes.rest/qod?language=en", {
+      headers: { "Accept": "application/json" }
+    })
       .then(r => r.json())
       .then(data => {
-        setQuote(data.quote)
-        setQuoteAuthor(data.author)
+        setQuote(data.contents.quotes[0].quote)
+        setQuoteAuthor(data.contents.quotes[0].author)
+      })
+      .catch(() => {
+        setQuote("Every day is a new beginning.")
+        setQuoteAuthor("Unknown")
       })
   }, [])
 
