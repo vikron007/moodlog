@@ -29,13 +29,11 @@ export default function MoodCalendar({ user }) {
   }, [year, month])
 
  useEffect(() => {
-    fetch("https://quotes.rest/qod?language=en", {
-      headers: { "Accept": "application/json" }
-    })
+    fetch("https://api.quotable.io/random?tags=inspirational|mindfulness")
       .then(r => r.json())
       .then(data => {
-        setQuote(data.contents.quotes[0].quote)
-        setQuoteAuthor(data.contents.quotes[0].author)
+        setQuote(data.content)
+        setQuoteAuthor(data.author)
       })
       .catch(() => {
         setQuote("Every day is a new beginning.")
@@ -144,15 +142,15 @@ const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart
             </div>
             <span className="text-sm font-medium text-gray-800">MoodLog</span>
           </div>
-          {quote && (
-          <div className="px-5 py-4 border-b border-gray-100">
-            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Quote of the day</p>
-            <p className="text-sm text-gray-700 italic leading-relaxed mb-1">"{quote}"</p>
-            <p className="text-xs text-gray-400">— {quoteAuthor}</p>
-          </div>
-        )}
+          
         </div>
-
+        {quote && (
+                  <div className="px-5 py-4 border-b border-gray-100">
+                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Quote of the day</p>
+                    <p className="text-sm text-gray-700 italic leading-relaxed mb-1">"{quote}"</p>
+                    <p className="text-xs text-gray-400">— {quoteAuthor}</p>
+                  </div>
+                )}
         <div className="px-5 pt-4 pb-2">
           <div className="flex items-center justify-between mb-4">
             <button onClick={prevMonth} className="text-gray-400 hover:text-gray-600 text-xl px-1">‹</button>
