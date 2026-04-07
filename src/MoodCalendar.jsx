@@ -21,10 +21,21 @@ export default function MoodCalendar({ user }) {
   const [mood, setMood]       = useState(null)
   const [note, setNote]       = useState("")
   const [saving, setSaving]   = useState(false)
+  const [quote, setQuote] = useState(null)
+  const [quoteAuthor, setQuoteAuthor] = useState(null)
 
   useEffect(() => {
     loadEntries()
   }, [year, month])
+
+ useEffect(() => {
+    fetch("/api/quote")
+      .then(r => r.json())
+      .then(data => {
+        setQuote(data.quote)
+        setQuoteAuthor(data.author)
+      })
+  }, [])
 
   async function loadEntries() {
     const ref = collection(db, "users", user.uid, "entries")
@@ -127,6 +138,13 @@ const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart
             </div>
             <span className="text-sm font-medium text-gray-800">MoodLog</span>
           </div>
+          {quote && (
+          <div className="px-5 py-4 border-b border-gray-100">
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Quote of the day</p>
+            <p className="text-sm text-gray-700 italic leading-relaxed mb-1">"{quote}"</p>
+            <p className="text-xs text-gray-400">— {quoteAuthor}</p>
+          </div>
+        )}
         </div>
 
         <div className="px-5 pt-4 pb-2">
