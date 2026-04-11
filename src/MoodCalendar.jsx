@@ -4,11 +4,11 @@ import { doc, setDoc, collection, getDocs } from "firebase/firestore"
 import { signOut } from "firebase/auth"
 
 const MOODS = [
-  { value: 1, emoji: "😞", label: "Rough",  bg: "bg-red-50",    border: "border-red-200",   dot: "bg-red-400",    text: "text-red-800"   },
-  { value: 2, emoji: "😕", label: "Low",    bg: "bg-amber-50",  border: "border-amber-200", dot: "bg-amber-400",  text: "text-amber-800" },
-  { value: 3, emoji: "😐", label: "Okay",   bg: "bg-gray-100",  border: "border-gray-200",  dot: "bg-gray-400",   text: "text-gray-600"  },
-  { value: 4, emoji: "🙂", label: "Good",   bg: "bg-green-50",  border: "border-green-200", dot: "bg-green-500",  text: "text-green-800" },
-  { value: 5, emoji: "😄", label: "Great",  bg: "bg-green-100", border: "border-green-400", dot: "bg-green-600",  text: "text-green-900" },
+  { value: 1, emoji: "😞", label: "Rough",  bg: "bg-red-50",    border: "border-red-300",   dot: "bg-red-400",    text: "text-red-700"   },
+  { value: 2, emoji: "😕", label: "Low",    bg: "bg-amber-50",  border: "border-amber-300", dot: "bg-amber-400",  text: "text-amber-700" },
+  { value: 3, emoji: "😐", label: "Okay",   bg: "bg-gray-100",  border: "border-gray-300",  dot: "bg-gray-400",   text: "text-gray-600"  },
+  { value: 4, emoji: "🙂", label: "Good",   bg: "bg-green-50",  border: "border-green-300", dot: "bg-green-500",  text: "text-green-700" },
+  { value: 5, emoji: "😄", label: "Great",  bg: "bg-emerald-50",border: "border-emerald-400",dot: "bg-emerald-500",text: "text-emerald-700"},
 ]
 
 const DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
@@ -98,7 +98,7 @@ export default function MoodCalendar({ user }) {
   }
 
   const selectedDateLabel = selected
-    ? new Date(year, month, selected).toLocaleDateString("default", { weekday: "long", month: "long", day: "numeric" })
+    ? new Date(year, month, selected).toLocaleDateString("default", { weekday: "long", day: "numeric", month: "long" })
     : null
 
   const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`
@@ -129,16 +129,12 @@ export default function MoodCalendar({ user }) {
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-0 px-0 sm:py-10 sm:px-4">
       <div className="w-full sm:max-w-sm bg-white sm:rounded-2xl border-0 sm:border sm:border-gray-100 overflow-hidden sm:shadow-sm">
 
-        <div className="px-6 py-5 border-b border-gray-50 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 text-sm font-medium">
-              {user.displayName?.[0] || user.email?.[0]?.toUpperCase()}
-            </div>
-            <span className="text-base font-medium text-gray-900">MoodLog</span>
-          </div>
+        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <span className="text-base font-medium text-gray-900">MoodLog</span>
           <button
-            onClick={() => signOut(auth)}
-            className="text-xs text-gray-300 hover:text-gray-400 transition-colors"
+            onPointerUp={() => signOut(auth)}
+            style={{ WebkitTapHighlightColor: "transparent" }}
+            className="text-xs text-gray-400 hover:text-gray-600 active:text-gray-600 py-2 px-3 -mr-3"
           >
             Sign out
           </button>
@@ -152,11 +148,19 @@ export default function MoodCalendar({ user }) {
           </div>
         )}
 
-        <div className="px-6 pt-6 pb-4">
-          <div className="flex items-center justify-between mb-5">
-            <button onClick={prevMonth} className="text-gray-300 hover:text-gray-500 text-xl px-2 py-1">‹</button>
+        <div className="px-6 pt-5 pb-3">
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onPointerUp={prevMonth}
+              style={{ WebkitTapHighlightColor: "transparent" }}
+              className="text-gray-300 hover:text-gray-500 text-xl px-3 py-2 -ml-3"
+            >‹</button>
             <span className="text-sm font-medium text-gray-800">{monthName} {year}</span>
-            <button onClick={nextMonth} className="text-gray-300 hover:text-gray-500 text-xl px-2 py-1">›</button>
+            <button
+              onPointerUp={nextMonth}
+              style={{ WebkitTapHighlightColor: "transparent" }}
+              className="text-gray-300 hover:text-gray-500 text-xl px-3 py-2 -mr-3"
+            >›</button>
           </div>
 
           <div className="grid grid-cols-7 mb-2">
@@ -178,14 +182,15 @@ export default function MoodCalendar({ user }) {
               return (
                 <button
                   key={day}
-                  onClick={() => selectDay(day)}
+                  onPointerUp={() => !isFuture && selectDay(day)}
                   disabled={isFuture}
+                  style={{ WebkitTapHighlightColor: "transparent" }}
                   className={`
                     aspect-square rounded-xl flex flex-col items-center justify-center text-xs font-medium transition-all
-                    ${moodData ? `${moodData.bg} ${moodData.text}` : "bg-gray-50 text-gray-400 hover:bg-gray-100"}
-                    ${isSelected ? "ring-2 ring-blue-300 ring-offset-1" : ""}
-                    ${isTodayDay && !isSelected ? "ring-1 ring-blue-200" : ""}
-                    ${isFuture ? "opacity-25 cursor-not-allowed" : ""}
+                    ${moodData ? `${moodData.bg} ${moodData.text}` : "bg-gray-50 text-gray-400"}
+                    ${isSelected ? "ring-2 ring-blue-400 ring-offset-1" : ""}
+                    ${isTodayDay && !isSelected ? "ring-2 ring-blue-200" : ""}
+                    ${isFuture ? "opacity-20 cursor-not-allowed" : "cursor-pointer"}
                   `}
                 >
                   {day}
@@ -198,39 +203,39 @@ export default function MoodCalendar({ user }) {
           </div>
         </div>
 
-        <div className="px-6 pb-6">
+        <div className="px-6 pb-5">
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-center">
-              <p className="text-xs text-blue-400 mb-1.5">Avg mood</p>
-              <p className="text-2xl font-medium text-blue-700">{avgMood ?? "—"}</p>
+            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-3 text-center">
+              <p className="text-xs text-blue-400 mb-1">Avg mood</p>
+              <p className="text-xl font-medium text-blue-700">{avgMood ?? "—"}</p>
             </div>
-            <div className="bg-purple-50 border border-purple-100 rounded-2xl p-4 text-center">
-              <p className="text-xs text-purple-400 mb-1.5">Days logged</p>
-              <p className="text-2xl font-medium text-purple-700">{monthEntries.length}</p>
+            <div className="bg-purple-50 border border-purple-100 rounded-2xl p-3 text-center">
+              <p className="text-xs text-purple-400 mb-1">Days logged</p>
+              <p className="text-xl font-medium text-purple-700">{monthEntries.length}</p>
             </div>
-            <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 text-center">
-              <p className="text-xs text-emerald-400 mb-1.5">Streak</p>
-              <p className="text-2xl font-medium text-emerald-700">{streak}<span className="text-sm ml-1">{streak === 1 ? "day" : "days"}</span></p>
+            <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-3 text-center">
+              <p className="text-xs text-emerald-400 mb-1">Streak</p>
+              <p className="text-xl font-medium text-emerald-700">{streak}<span className="text-xs ml-1">{streak === 1 ? "d" : "d"}</span></p>
             </div>
           </div>
         </div>
 
         {selected && (
-          <div className="border-t border-gray-50 px-6 py-6">
-            <p className="text-sm font-medium text-gray-800 mb-4">{selectedDateLabel}</p>
-            <p className="text-xs text-gray-400 mb-3">How are you feeling?</p>
-            <div className="flex gap-2 mb-4">
+          <div className="border-t border-gray-100 px-6 py-5">
+            <p className="text-sm font-medium text-gray-800 mb-3">{selectedDateLabel}</p>
+            <div className="flex gap-2 mb-3">
               {MOODS.map(m => (
                 <button
                   key={m.value}
-                  onClick={() => setMood(m.value)}
+                  onPointerUp={() => setMood(m.value)}
+                  style={{ WebkitTapHighlightColor: "transparent" }}
                   className={`
-                    flex-1 py-2.5 rounded-xl border text-center transition-all
-                    ${mood === m.value ? `${m.bg} ${m.border} border-2` : "bg-gray-50 border-gray-100 hover:bg-gray-100"}
+                    flex-1 py-2 rounded-xl border-2 text-center transition-all
+                    ${mood === m.value ? `${m.bg} ${m.border}` : "bg-gray-50 border-gray-100"}
                   `}
                 >
                   <div className="text-lg">{m.emoji}</div>
-                  <div className={`text-xs mt-1 ${mood === m.value ? m.text : "text-gray-300"}`}>{m.value}</div>
+                  <div className={`text-xs mt-0.5 ${mood === m.value ? m.text : "text-gray-300"}`}>{m.value}</div>
                 </button>
               ))}
             </div>
@@ -238,22 +243,23 @@ export default function MoodCalendar({ user }) {
               value={note}
               onChange={e => setNote(e.target.value)}
               placeholder="What's on your mind? (optional)"
-              rows={3}
+              rows={2}
               className="w-full text-sm border border-gray-100 rounded-xl px-4 py-3 resize-none text-gray-600 placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-200 bg-gray-50"
             />
             <button
-              onClick={saveEntry}
+              onPointerUp={saveEntry}
               disabled={!mood || saving}
-              className="w-full mt-3 py-3.5 rounded-xl bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors shadow-sm"
+              style={{ WebkitTapHighlightColor: "transparent" }}
+              className="w-full mt-3 py-3.5 rounded-xl bg-emerald-500 text-white text-sm font-medium active:bg-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
               {saving ? "Saving..." : "Save entry"}
             </button>
           </div>
         )}
 
-        <div className="border-t border-gray-50 px-6 py-6">
-          <p className="text-xs font-medium text-gray-300 uppercase tracking-widest mb-4">Today</p>
-          {todayEntry ? (
+        {todayEntry && (
+          <div className="border-t border-gray-100 px-6 py-5">
+            <p className="text-xs font-medium text-gray-300 uppercase tracking-widest mb-3">Today</p>
             <div className={`rounded-2xl p-4 flex items-start gap-4 ${MOODS.find(m => m.value === todayEntry.mood)?.bg}`}>
               <span className="text-3xl">{MOODS.find(m => m.value === todayEntry.mood)?.emoji}</span>
               <div>
@@ -265,15 +271,8 @@ export default function MoodCalendar({ user }) {
                 )}
               </div>
             </div>
-          ) : (
-            <button
-              onClick={() => selectDay(today.getDate())}
-              className="w-full py-4 rounded-2xl border border-dashed border-emerald-200 text-sm text-emerald-400 hover:bg-emerald-50 transition-colors"
-            >
-              How are you feeling today? Tap to log →
-            </button>
-          )}
-        </div>
+          </div>
+        )}
 
       </div>
     </div>
