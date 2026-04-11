@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "810708801036",
+    "project_id": "moodlog-f1f6a",
+    "storage_bucket": "moodlog-f1f6a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810708801036:android:77f715d967c4d1e01b0029",
+        "android_client_info": {
+          "package_name": "com.vikron007.moodlog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "810708801036-k0620lnimkaeq12ej03tce6cr9sha8pb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqBnqDWR0tLMSbJj-r-gbwNsUvwyBIX8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "810708801036-k0620lnimkaeq12ej03tce6cr9sha8pb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

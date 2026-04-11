@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
-import { signInWithPopup, onAuthStateChanged, signOut } from "firebase/auth"
+import { signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged } from "firebase/auth"
+import { Capacitor } from "@capacitor/core"
 import { auth, provider } from "./firebase"
 import MoodCalendar from "./MoodCalendar"
 
@@ -13,9 +14,21 @@ function App() {
     return unsubscribe
   }, [])
 
+  useEffect(() => {
+    getRedirectResult(auth).then((result) => {
+      if (result?.user) {
+        setUser(result.user)
+      }
+    }).catch(console.error)
+  }, [])
+
   const handleLogin = async () => {
     try {
-      await signInWithPopup(auth, provider)
+      if (Capacitor.isNativePlatform()) {
+        await signInWithRedirect(auth, provider)
+      } else {
+        await signInWithPopup(auth, provider)
+      }
     } catch (error) {
       console.error("Login failed:", error)
     }

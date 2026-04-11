@@ -4,7 +4,7 @@ import { getFirestore } from "firebase/firestore"
 
 const firebaseConfig = {
   apiKey: "AIzaSyBBKSly1uKOVjI_La0IChLCn9IVBYWV5Ww",
-  authDomain: "moodlog-f1f6a.firebaseapp.com",
+  authDomain: "moodlog-zeta.vercel.app",
   projectId: "moodlog-f1f6a",
   storageBucket: "moodlog-f1f6a.firebasestorage.app",
   messagingSenderId: "810708801036",
