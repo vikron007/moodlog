@@ -126,8 +126,8 @@ export default function MoodCalendar({ user }) {
   })()
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-10 px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-0 px-0 sm:py-10 sm:px-4">
+      <div className="w-full sm:max-w-sm bg-white sm:rounded-2xl border-0 sm:border sm:border-gray-100 overflow-hidden sm:shadow-sm">
 
         <div className="px-6 py-5 border-b border-gray-50 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -200,17 +200,17 @@ export default function MoodCalendar({ user }) {
 
         <div className="px-6 pb-6">
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-gray-50 rounded-2xl p-4 text-center">
-              <p className="text-xs text-gray-300 mb-1.5">Avg mood</p>
-              <p className="text-2xl font-medium text-gray-800">{avgMood ?? "—"}</p>
+            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-center">
+              <p className="text-xs text-blue-400 mb-1.5">Avg mood</p>
+              <p className="text-2xl font-medium text-blue-700">{avgMood ?? "—"}</p>
             </div>
-            <div className="bg-gray-50 rounded-2xl p-4 text-center">
-              <p className="text-xs text-gray-300 mb-1.5">Days logged</p>
-              <p className="text-2xl font-medium text-gray-800">{monthEntries.length}</p>
+            <div className="bg-purple-50 border border-purple-100 rounded-2xl p-4 text-center">
+              <p className="text-xs text-purple-400 mb-1.5">Days logged</p>
+              <p className="text-2xl font-medium text-purple-700">{monthEntries.length}</p>
             </div>
-            <div className="bg-gray-50 rounded-2xl p-4 text-center">
-              <p className="text-xs text-gray-300 mb-1.5">Streak</p>
-              <p className="text-2xl font-medium text-gray-800">{streak}<span className="text-sm ml-1">{streak === 1 ? "day" : "days"}</span></p>
+            <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 text-center">
+              <p className="text-xs text-emerald-400 mb-1.5">Streak</p>
+              <p className="text-2xl font-medium text-emerald-700">{streak}<span className="text-sm ml-1">{streak === 1 ? "day" : "days"}</span></p>
             </div>
           </div>
         </div>
@@ -244,7 +244,7 @@ export default function MoodCalendar({ user }) {
             <button
               onClick={saveEntry}
               disabled={!mood || saving}
-              className="w-full mt-3 py-3 rounded-xl bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="w-full mt-3 py-3.5 rounded-xl bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors shadow-sm"
             >
               {saving ? "Saving..." : "Save entry"}
             </button>
@@ -268,7 +268,7 @@ export default function MoodCalendar({ user }) {
           ) : (
             <button
               onClick={() => selectDay(today.getDate())}
-              className="w-full py-4 rounded-2xl border border-dashed border-gray-200 text-sm text-gray-300 hover:bg-gray-50 transition-colors"
+              className="w-full py-4 rounded-2xl border border-dashed border-emerald-200 text-sm text-emerald-400 hover:bg-emerald-50 transition-colors"
             >
               How are you feeling today? Tap to log →
             </button>
