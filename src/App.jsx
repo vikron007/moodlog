@@ -108,7 +108,8 @@ function App() {
           {!showEmailForm ? (
             <button
               onClick={() => setShowEmailForm(true)}
-              className="w-full py-3 px-4 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
+              style={{ WebkitTapHighlightColor: "transparent", cursor: "pointer" }}
+              className="w-full py-4 px-4 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 active:bg-gray-50"
             >
               Continue with Email
             </button>
