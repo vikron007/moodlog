@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { signInWithPopup, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } from "firebase/auth"
+import { signInWithPopup, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut } from "firebase/auth"
 import { auth, provider } from "./firebase"
 import MoodCalendar from "./MoodCalendar"
 import { Capacitor } from "@capacitor/core"
@@ -158,7 +158,16 @@ function App() {
     )
   }
 
-  return <MoodCalendar user={user} />
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth)
+      setUser(null)
+    } catch (e) {
+      console.error("Sign out error:", e)
+    }
+  }
+
+  return <MoodCalendar user={user} onSignOut={handleSignOut} />
 }
 
 export default App

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import { db, auth } from "./firebase"
 import { doc, setDoc, collection, getDocs } from "firebase/firestore"
-import { signOut } from "firebase/auth"
 
 const MOODS = [
   { value: 1, emoji: "😞", label: "Rough",  bg: "bg-red-50",    border: "border-red-300",   dot: "bg-red-400",    text: "text-red-700"   },
@@ -13,7 +12,7 @@ const MOODS = [
 
 const DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
 
-export default function MoodCalendar({ user }) {
+export default function MoodCalendar({ user, onSignOut }) {
   const today = new Date()
   const [year, setYear]         = useState(today.getFullYear())
   const [month, setMonth]       = useState(today.getMonth())
@@ -78,6 +77,7 @@ export default function MoodCalendar({ user }) {
     const clicked = new Date(year, month, day)
     const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
     if (clicked > todayStart) return
+    if (clicked < todayStart) return
     const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
     const existing = entries[key]
     setSelected(day)
@@ -132,7 +132,7 @@ export default function MoodCalendar({ user }) {
         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
           <span className="text-base font-medium text-gray-900">MoodLog</span>
           <button
-            onPointerUp={() => signOut(auth)}
+            onPointerUp={onSignOut}
             style={{ WebkitTapHighlightColor: "transparent" }}
             className="text-xs text-gray-400 hover:text-gray-600 active:text-gray-600 py-2 px-3 -mr-3"
           >
@@ -177,20 +177,22 @@ export default function MoodCalendar({ user }) {
               const moodData = entry ? MOODS.find(m => m.value === entry.mood) : null
               const isSelected = selected === day
               const isTodayDay = isToday(day)
-              const isFuture = new Date(year, month, day) > new Date(today.getFullYear(), today.getMonth(), today.getDate())
+              const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+              const isFuture = new Date(year, month, day) > todayStart
+              const isPast = new Date(year, month, day) < todayStart
 
               return (
                 <button
                   key={day}
-                  onPointerUp={() => !isFuture && selectDay(day)}
-                  disabled={isFuture}
+                  onPointerUp={() => !isFuture && !isPast && selectDay(day)}
+                  disabled={isFuture || isPast}
                   style={{ WebkitTapHighlightColor: "transparent" }}
                   className={`
                     aspect-square rounded-xl flex flex-col items-center justify-center text-xs font-medium transition-all
                     ${moodData ? `${moodData.bg} ${moodData.text}` : "bg-gray-50 text-gray-400"}
                     ${isSelected ? "ring-2 ring-blue-400 ring-offset-1" : ""}
                     ${isTodayDay && !isSelected ? "ring-2 ring-blue-200" : ""}
-                    ${isFuture ? "opacity-20 cursor-not-allowed" : "cursor-pointer"}
+                    ${isFuture || isPast ? "opacity-20 cursor-not-allowed" : "cursor-pointer"}
                   `}
                 >
                   {day}
