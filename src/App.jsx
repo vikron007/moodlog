@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { signInWithPopup, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut } from "firebase/auth"
+import { signInWithPopup, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail } from "firebase/auth"
 import { auth, provider } from "./firebase"
 import MoodCalendar from "./MoodCalendar"
 import { Capacitor } from "@capacitor/core"
@@ -25,6 +25,7 @@ function App() {
   const [error, setError] = useState("")
   const [showEmailForm, setShowEmailForm] = useState(false)
   const [verificationSent, setVerificationSent] = useState(false)
+  const [resetSent, setResetSent] = useState(false)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -40,6 +41,20 @@ function App() {
       await signInWithPopup(auth, provider)
     } catch (error) {
       console.error("Login failed:", error)
+    }
+  }
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError("Please enter your email address first.")
+      return
+    }
+    try {
+      await sendPasswordResetEmail(auth, email)
+      setResetSent(true)
+      setError("")
+    } catch (err) {
+      setError(getErrorMessage(err.code))
     }
   }
 
@@ -142,11 +157,23 @@ function App() {
                 {isRegistering ? "Create account" : "Sign in"}
               </button>
               <button
-                onClick={() => { setIsRegistering(!isRegistering); setError("") }}
-                className="w-full text-xs text-gray-300 hover:text-gray-400 transition-colors"
+                onClick={() => { setIsRegistering(!isRegistering); setError(""); setResetSent(false) }}
+                className="w-full text-xs text-gray-300 hover:text-gray-400 transition-colors mb-2"
               >
                 {isRegistering ? "Already have an account? Sign in" : "New here? Create an account"}
               </button>
+              {!isRegistering && (
+                resetSent ? (
+                  <p className="text-xs text-emerald-500 text-center">Reset email sent! Check your inbox.</p>
+                ) : (
+                  <button
+                    onClick={handleForgotPassword}
+                    className="w-full text-xs text-gray-300 hover:text-gray-400 transition-colors"
+                  >
+                    Forgot password?
+                  </button>
+                )
+              )}
             </div>
           )}
 
