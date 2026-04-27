@@ -25,7 +25,10 @@ function App() {
   const [error, setError] = useState("")
   const [showEmailForm, setShowEmailForm] = useState(false)
   const [verificationSent, setVerificationSent] = useState(false)
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
+  const [resetEmail, setResetEmail] = useState("")
   const [resetSent, setResetSent] = useState(false)
+  const [resetError, setResetError] = useState("")
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -41,20 +44,6 @@ function App() {
       await signInWithPopup(auth, provider)
     } catch (error) {
       console.error("Login failed:", error)
-    }
-  }
-
-  const handleForgotPassword = async () => {
-    if (!email) {
-      setError("Please enter your email address first.")
-      return
-    }
-    try {
-      await sendPasswordResetEmail(auth, email)
-      setResetSent(true)
-      setError("")
-    } catch (err) {
-      setError(getErrorMessage(err.code))
     }
   }
 
@@ -81,6 +70,29 @@ function App() {
     }
   }
 
+  const handleResetPassword = async () => {
+    setResetError("")
+    if (!resetEmail) {
+      setResetError("Please enter your email address.")
+      return
+    }
+    try {
+      await sendPasswordResetEmail(auth, resetEmail)
+      setResetSent(true)
+    } catch (err) {
+      setResetError(getErrorMessage(err.code))
+    }
+  }
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth)
+      setUser(null)
+    } catch (e) {
+      console.error("Sign out error:", e)
+    }
+  }
+
   if (verificationSent) {
     return (
       <div className="min-h-screen bg-white sm:bg-gray-50 flex items-center justify-center">
@@ -90,12 +102,73 @@ function App() {
           <p className="text-sm text-gray-500 leading-relaxed mb-6">
             We sent a verification link to <strong>{email}</strong>. Click it to activate your account, then come back and sign in.
           </p>
+          <p className="text-xs text-gray-400 mb-6">Can't find it? Check your spam folder.</p>
           <button
             onClick={() => { setVerificationSent(false); setIsRegistering(false) }}
             className="w-full py-3 px-4 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700"
           >
             Go to sign in
           </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (showForgotPassword) {
+    return (
+      <div className="min-h-screen bg-white sm:bg-gray-50 flex items-center justify-center">
+        <div className="bg-white sm:rounded-2xl sm:border sm:border-gray-200 p-12 w-full sm:w-80 text-center">
+          {resetSent ? (
+            <>
+              <div className="text-5xl mb-4">📩</div>
+              <h2 className="text-xl font-medium text-gray-900 mb-2">Email sent!</h2>
+              <p className="text-sm text-gray-500 leading-relaxed mb-2">
+                A password reset link has been sent to <strong>{resetEmail}</strong>.
+              </p>
+              <p className="text-xs text-gray-400 mb-6">Can't find it? Check your spam folder.</p>
+              <button
+                onClick={() => {
+                  setShowForgotPassword(false)
+                  setResetSent(false)
+                  setResetEmail("")
+                  setIsRegistering(false)
+                }}
+                className="w-full py-3 px-4 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700"
+              >
+                Back to sign in
+              </button>
+            </>
+          ) : (
+            <>
+              <div className="text-5xl mb-4">🔑</div>
+              <h2 className="text-xl font-medium text-gray-900 mb-2">Reset password</h2>
+              <p className="text-sm text-gray-500 leading-relaxed mb-6">
+                Enter your email and we'll send you a reset link.
+              </p>
+              <input
+                type="email"
+                placeholder="Your email address"
+                value={resetEmail}
+                onChange={e => setResetEmail(e.target.value)}
+                className="w-full py-2.5 px-3 border border-gray-300 rounded-lg text-sm mb-3 focus:outline-none focus:ring-1 focus:ring-blue-300 text-left"
+              />
+              {resetError && (
+                <p className="text-xs text-red-400 mb-3 leading-relaxed">{resetError}</p>
+              )}
+              <button
+                onClick={handleResetPassword}
+                className="w-full py-3 px-4 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 mb-3"
+              >
+                Send reset link
+              </button>
+              <button
+                onClick={() => { setShowForgotPassword(false); setResetError("") }}
+                className="w-full text-sm text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                ← Back to sign in
+              </button>
+            </>
+          )}
         </div>
       </div>
     )
@@ -123,7 +196,7 @@ function App() {
           {!showEmailForm ? (
             <button
               onClick={() => setShowEmailForm(true)}
-              style={{ WebkitTapHighlightColor: "transparent", cursor: "pointer" }}
+              style={{ WebkitTapHighlightColor: "transparent" }}
               className="w-full py-4 px-4 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 active:bg-gray-50"
             >
               Continue with Email
@@ -157,22 +230,18 @@ function App() {
                 {isRegistering ? "Create account" : "Sign in"}
               </button>
               <button
-                onClick={() => { setIsRegistering(!isRegistering); setError(""); setResetSent(false) }}
-                className="w-full text-xs text-gray-300 hover:text-gray-400 transition-colors mb-2"
+                onClick={() => { setIsRegistering(!isRegistering); setError("") }}
+                className="w-full text-sm text-gray-500 hover:text-gray-700 transition-colors mb-2"
               >
                 {isRegistering ? "Already have an account? Sign in" : "New here? Create an account"}
               </button>
               {!isRegistering && (
-                resetSent ? (
-                  <p className="text-xs text-emerald-500 text-center">Reset email sent! Check your inbox.</p>
-                ) : (
-                  <button
-                    onClick={handleForgotPassword}
-                    className="w-full text-xs text-gray-300 hover:text-gray-400 transition-colors"
-                  >
-                    Forgot password?
-                  </button>
-                )
+                <button
+                  onClick={() => { setShowForgotPassword(true); setResetError(""); setResetSent(false) }}
+                  className="w-full text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                >
+                  Forgot password?
+                </button>
               )}
             </div>
           )}
@@ -183,15 +252,6 @@ function App() {
         </div>
       </div>
     )
-  }
-
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth)
-      setUser(null)
-    } catch (e) {
-      console.error("Sign out error:", e)
-    }
   }
 
   return <MoodCalendar user={user} onSignOut={handleSignOut} />
