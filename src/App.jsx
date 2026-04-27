@@ -68,8 +68,8 @@ function App() {
 
   if (verificationSent) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-12 w-80 text-center">
+      <div className="min-h-screen bg-white sm:bg-gray-50 flex items-center justify-center">
+        <div className="bg-white sm:rounded-2xl sm:border sm:border-gray-200 p-12 w-full sm:w-80 text-center">
           <div className="text-5xl mb-4">📬</div>
           <h2 className="text-xl font-medium text-gray-900 mb-2">Check your email</h2>
           <p className="text-sm text-gray-500 leading-relaxed mb-6">
@@ -88,8 +88,8 @@ function App() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl border border-gray-200 p-12 w-80 text-center">
+      <div className="min-h-screen bg-white sm:bg-gray-50 flex items-center justify-center">
+        <div className="bg-white sm:rounded-2xl sm:border sm:border-gray-200 p-12 w-full sm:w-80 text-center">
           <div className="text-5xl mb-4">🌤️</div>
           <h1 className="text-2xl font-medium text-gray-900 mb-2">MoodLog</h1>
           <p className="text-sm text-gray-500 mb-8 leading-relaxed">
